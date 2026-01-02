@@ -1,0 +1,38 @@
+get_data/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environments
+env/
+venv/
+.venv/
+
+# Environment Variables & Secrets
+.env
+.env.local
+
+# Database (SQLite)
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+*.log
+
+# OS Specific
+.DS_Store
+Thumbs.db
+
+# IDE Settings
+.vscode/
+.idea/
+
+# Text files
+*.txt
+
+# Tests
+test_db
+test_db_read.py

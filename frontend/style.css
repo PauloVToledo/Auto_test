@@ -1,0 +1,88 @@
+body {
+  font-family: sans-serif;
+  background: #f4f4f9;
+  padding: 20px;
+}
+h1 {
+  text-align: center;
+  color: #333;
+}
+
+.car-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  max_width: 1200px;
+  margin: 0 auto;
+}
+
+.car-card {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.car-card h3 {
+  margin-top: 0;
+  color: #2c3e50;
+}
+.car-card .price {
+  color: #27ae60;
+  font-weight: bold;
+  font-size: 1.2em;
+}
+.car-card button {
+  background: #3498db;
+  color: white;
+  border: none;
+  padding: 10px;
+  width: 100%;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+.car-card button:hover {
+  background: #2980b9;
+}
+
+/* Modal Styles */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+.modal-content {
+  background-color: #fff;
+  margin: 10% auto;
+  padding: 20px;
+  width: 90%;
+  max-width: 400px;
+  border-radius: 8px;
+}
+.close-btn {
+  float: right;
+  font-size: 28px;
+  cursor: pointer;
+}
+.form-group {
+  margin-bottom: 15px;
+}
+.form-group input {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+}
+.btn-submit {
+  background: #27ae60;
+  color: white;
+  border: none;
+  padding: 10px;
+  width: 100%;
+  border-radius: 4px;
+  cursor: pointer;
+}
