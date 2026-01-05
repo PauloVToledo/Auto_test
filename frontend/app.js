@@ -55,6 +55,7 @@ document
 
     const data = {
       vehicle_id: parseInt(document.getElementById("vehicle_id").value),
+      customer_name: document.getElementById("name").value,
       customer_phone: document.getElementById("phone").value,
       date: document.getElementById("date").value,
     };
