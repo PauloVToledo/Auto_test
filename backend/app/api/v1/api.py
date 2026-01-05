@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 from app.api.v1.endpoints import vehicles
+from app.api.v1.endpoints import vehicles, appointments
 
 api_router = APIRouter()
 
@@ -9,6 +10,10 @@ api_router = APIRouter()
 # Add the router
 api_router.include_router(vehicles.router, prefix="/vehicles", tags=["vehicles"])
 
+
+api_router.include_router(
+    appointments.router, prefix="/appointments", tags=["appointments"]
+)
 
 # @api_router.get("/test")
 # def test_route():
