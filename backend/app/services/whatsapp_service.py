@@ -34,7 +34,7 @@ def send_appointment_confirmation(
             f"Tu visita ha sido agendada con éxito. ✅\n\n"
             f"📅 *Fecha:* {date_str}\n"
             f"🚙 *Vehículo:* {vehicle_info}\n\n"
-            f"Te esperamos en la sucursal ubicada en la Dirección 'Estafas 777 con Unicornios 123'. ¡Saludos!"
+            f"Te esperamos en la sucursal ubicada en la Dirección 'Tester 123'. ¡Saludos!"
         )
 
         message = client.messages.create(
