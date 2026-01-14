@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from sqlalchemy.orm import Session
 from app.schemas.appointment import AppointmentCreate
-from app.services import booking_service, whatsapp_service
+from app.services import booking_service, whatsapp_service, gmail_service
 from app.core.database import get_db
 
 from app.models.appointment import Appointment
@@ -52,6 +52,9 @@ def create_appointment(
         else "Vehículo seleccionado"
     )
 
+    # Convertimos la fecha de objeto datetime a texto legible (String)
+    date_formatted = booking.date.strftime("%d/%m/%Y a las %H:%M")
+
     # 4. Enviar WhatsApp (Si todo salió bien - Status 200 implícito al retornar)
     # Usamos background_tasks para que el usuario no espere a que Twilio responda
     background_tasks.add_task(
@@ -59,6 +62,15 @@ def create_appointment(
         to_number=booking.customer_phone,
         user_name=booking.customer_name,
         date_str=booking.date.strftime("%d/%m/%Y a las %H:%M"),
+        vehicle_info=vehicle_str,
+    )
+
+    # Tarea 2: Gmail API
+    background_tasks.add_task(
+        gmail_service.send_seller_notification,  # <--- USAMOS EL NUEVO SERVICIO
+        client_name=booking.customer_name,
+        client_phone=booking.customer_phone,
+        date_str=date_formatted,
         vehicle_info=vehicle_str,
     )
 

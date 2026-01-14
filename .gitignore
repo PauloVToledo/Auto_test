@@ -37,3 +37,7 @@ Thumbs.db
 # Tests
 test_db
 test_db_read.py
+
+# Gmail Service
+credentials.json
+token.json
