@@ -6,7 +6,7 @@ from app.api.v1.api import api_router
 from contextlib import asynccontextmanager
 from app.core.database import engine, Base
 
-# uvicorn app.main:app --reload   --> to run the app.
+# uvicorn app.main:app --reload   --> to run the app
 
 # 1. Inicialización de la App
 # Definimos el título y versión (útil para la documentación automática)

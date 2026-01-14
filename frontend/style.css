@@ -1,88 +1,157 @@
+/* style.css */
+
+/* --- Estilos Generales --- */
 body {
-  font-family: sans-serif;
-  background: #f4f4f9;
-  padding: 20px;
-}
-h1 {
-  text-align: center;
-  color: #333;
+  background-color: #f8f9fa; /* Gris muy suave */
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.car-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
-  max_width: 1200px;
+/* --- Navbar Personalizada --- */
+
+/* 1. Contenedor de los links */
+.navbar-nav {
   margin: 0 auto;
+  align-items: center; /* Alineación vertical perfecta */
+  gap: 15px; /* Espacio entre los botones */
 }
 
-.car-card {
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+/* 2. Estilo base del botón (Link) */
+.navbar-nav .nav-link {
+  font-size: 1.25rem; /* Fuente más grande (antes era aprox 1rem) */
+  font-weight: 600; /* Letra un poco más gruesa */
+  padding: 10px 25px !important; /* Más espacio interno */
+  border-radius: 50px; /* Bordes redondeados (forma de píldora) */
+
+  /* LA MAGIA DEL SUAVIZADO */
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  /* "all" anima color, tamaño y fondo al mismo tiempo */
 }
 
-.car-card h3 {
-  margin-top: 0;
-  color: #2c3e50;
+/* 3. Efecto al pasar el mouse (Hover) */
+.navbar-nav .nav-link:hover {
+  transform: scale(1.15); /* Agrandar un 15% */
+  color: #fff !important; /* Texto blanco puro */
+  background-color: rgba(
+    255,
+    255,
+    255,
+    0.15
+  ); /* Fondo blanco semitransparente */
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.4); /* Pequeño resplandor en el texto */
 }
-.car-card .price {
-  color: #27ae60;
-  font-weight: bold;
-  font-size: 1.2em;
+
+/* 4. Estado Activo (Página actual) */
+.navbar-nav .nav-link.active {
+  color: #4da3ff !important; /* Un azul claro para indicar selección */
+  transform: scale(1.05); /* Mantener un poco agrandado */
 }
-.car-card button {
-  background: #3498db;
-  color: white;
+
+/* --- Estilos de las Tarjetas de Autos --- */
+.card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   border: none;
-  padding: 10px;
-  width: 100%;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-top: 10px;
-}
-.car-card button:hover {
-  background: #2980b9;
+  background: #fff;
+  border-radius: 12px; /* Bordes más suaves en las tarjetas */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
-/* Modal Styles */
-.modal {
-  display: none; /* Hidden by default */
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+.card:hover {
+  transform: translateY(-8px); /* Sube un poco más que antes */
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15); /* Sombra más pronunciada */
 }
-.modal-content {
-  background-color: #fff;
-  margin: 10% auto;
-  padding: 20px;
-  width: 90%;
-  max-width: 400px;
-  border-radius: 8px;
+
+.card-img-top {
+  height: 200px;
+  object-fit: cover;
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
 }
-.close-btn {
-  float: right;
-  font-size: 28px;
-  cursor: pointer;
-}
-.form-group {
-  margin-bottom: 15px;
-}
-.form-group input {
-  width: 100%;
-  padding: 8px;
-  box-sizing: border-box;
-}
-.btn-submit {
-  background: #27ae60;
-  color: white;
+
+/* --- ESTILOS DEL FILTRO AVANZADO --- */
+
+/* 1. La Tarjeta del Filtro (Contenedor) */
+.filter-card {
+  background: lab(89.06% -0.27 -2.31 / 0.568);
   border: none;
-  padding: 10px;
-  width: 100%;
-  border-radius: 4px;
+  /* Sombra profunda para que parezca flotar sobre el sitio */
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15) !important;
+  /* Borde superior azul para destacar */
+  border-top: 5px solid #0d6efd;
+  border-radius: 15px !important;
+  transition: transform 0.3s ease;
+}
+
+/* Pequeño movimiento al pasar el mouse por toda la caja */
+.filter-card:hover {
+  transform: translateY(-5px);
+}
+
+/* 2. Los Menús Desplegables (Selects) */
+.filter-select {
+  border: 2px solid #e9ecef; /* Borde más grueso */
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  padding: 10px 15px;
+  font-weight: 500;
+  color: #495057;
   cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+/* Cuando pasas el mouse por el input */
+.filter-select:hover {
+  border-color: #0d6efd; /* Se pone azul */
+  background-color: #fff; /* Se pone blanco brillante */
+  box-shadow: 0 0 10px rgba(13, 110, 253, 0.1); /* Resplandor suave */
+}
+
+/* Cuando haces clic para elegir */
+.filter-select:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.25); /* Resplandor fuerte */
+}
+
+/* 3. El Slider de Precio (Range) */
+/* Personalización del "riel" (la línea) */
+.custom-range {
+  height: 8px;
+  border-radius: 5px;
+  background: #dee2e6;
+  outline: none;
+  transition: background 0.45s;
+  cursor: grab;
+}
+
+/* Personalización del "mango" (la bolita que arrastras) - Chrome/Safari */
+.custom-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background: #0d6efd;
+  border: 3px solid #fff; /* Borde blanco para contraste */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+/* Efecto al agarrar la bolita */
+.custom-range:active::-webkit-slider-thumb {
+  transform: scale(1.3); /* Se agranda al arrastrar */
+  background: #0b5ed7;
+}
+
+/* 4. Etiquetas (Labels) */
+.filter-label {
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  color: #1d1e1f;
+  margin-bottom: 8px;
+  display: block;
 }

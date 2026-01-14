@@ -3,50 +3,194 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Automotora Test Client</title>
+    <title>Automotora Pro | Inicio</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <header>
-      <h1>🚗 Automotora Stock</h1>
-      <p>Frontend de Prueba (HTML/JS)</p>
-    </header>
+    <!-- NAVBAR CENTRADA -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark py-3">
+      <div class="container">
+        <a class="navbar-brand fw-bold" href="index.html">🚗 Automotora</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link active" href="index.html">Vehículos</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="about.html">Sobre el Proyecto</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
 
-    <main>
-      <!-- Here the cars will be injected by JS -->
-      <div id="car-list" class="car-grid">Loading vehicles...</div>
-    </main>
-
-    <!-- Modal for Booking -->
-    <div id="booking-modal" class="modal">
-      <div class="modal-content">
-        <span class="close-btn">&times;</span>
-        <h2>Agendar Visita</h2>
-        <p id="selected-car-text">Auto seleccionado: ...</p>
-
-        <form id="booking-form">
-          <input type="hidden" id="vehicle_id" name="vehicle_id" />
-
-          <div class="form-group">
-            <label>Tu Nombre:</label>
-            <input type="text" id="name" placeholder="Juan Pérez" required />
-          </div>
-
-          <div class="form-group">
-            <label>Tu Teléfono (Whatsapp):</label>
-            <input type="text" id="phone" placeholder="+56912345678" required />
-          </div>
-
-          <div class="form-group">
-            <label>Fecha y Hora:</label>
-            <input type="datetime-local" id="date" required />
-          </div>
-
-          <button type="submit" class="btn-submit">Confirmar Reserva</button>
-        </form>
+    <!-- HERO SECTION -->
+    <div class="bg-primary text-white text-center py-5 mb-5">
+      <div class="container">
+        <h1 class="display-4 fw-bold">Encuentra tu próximo auto</h1>
+        <p class="lead">
+          Agenda una visita presencial y recibe confirmación instantánea por
+          WhatsApp.
+        </p>
       </div>
     </div>
 
+    <!-- FILTRO DE BÚSQUEDA MEJORADO -->
+    <div class="container mt-n5 mb-5" style="position: relative; z-index: 10">
+      <!-- Agregamos la clase 'filter-card' -->
+      <div class="card filter-card p-4">
+        <h5 class="mb-4 text-primary fw-bold">
+          <span style="margin-right: 8px">🔍</span>Encuentra tu auto ideal
+        </h5>
+
+        <div class="row g-4 align-items-end">
+          <!-- Filtro Marca -->
+          <div class="col-md-3">
+            <label class="filter-label fw-bold">Marca</label>
+            <!-- Agregamos clase 'filter-select' -->
+            <select id="filter-brand" class="form-select filter-select">
+              <option value="all">Todas las marcas</option>
+            </select>
+          </div>
+
+          <!-- Filtro Año -->
+          <div class="col-md-3">
+            <label class="filter-label fw-bold">Año</label>
+            <!-- Agregamos clase 'filter-select' -->
+            <select id="filter-year" class="form-select filter-select">
+              <option value="all">Todos los años</option>
+            </select>
+          </div>
+
+          <!-- Filtro Precio (Slider) -->
+          <div class="col-md-4">
+            <label
+              class="filter-label fw-bold d-flex justify-content-between align-items-center"
+            >
+              Presupuesto Máximo
+              <span class="badge bg-primary rounded-pill fs-6" id="price-value"
+                >$90,000</span
+              >
+            </label>
+            <!-- Agregamos clase 'custom-range' y 'form-range' -->
+            <input
+              type="range"
+              class="form-range custom-range"
+              id="filter-price"
+              min="0"
+              max="90000"
+              step="1000"
+              value="90000"
+            />
+            <div class="d-flex justify-content-between text-muted small mt-1">
+              <span>$0</span>
+              <span>$90k</span>
+            </div>
+          </div>
+
+          <!-- Botón Limpiar -->
+          <div class="col-md-2 d-grid">
+            <button
+              id="btn-reset"
+              class="btn btn-outline-secondary py-2 fw-bold"
+              style="border-width: 2px"
+            >
+              ↺ Limpiar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LISTADO DE AUTOS -->
+    <div class="container mb-5">
+      <h2 class="text-center mb-4 text-secondary">Vehículos Disponibles</h2>
+      <!-- Aquí JS inyectará las cards de bootstrap -->
+      <div id="car-list" class="row row-cols-1 row-cols-md-3 g-4">
+        <div class="text-center w-100">Cargando catálogo...</div>
+      </div>
+    </div>
+
+    <!-- MODAL DE BOOTSTRAP (Formulario de Agenda) -->
+    <div class="modal fade" id="bookingModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title">📅 Agendar Visita</h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <p class="text-muted" id="selected-car-text">
+              Auto seleccionado: ...
+            </p>
+
+            <form id="booking-form">
+              <input type="hidden" id="vehicle_id" name="vehicle_id" />
+
+              <div class="mb-3">
+                <label class="form-label">Tu Nombre</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="name"
+                  placeholder="Ej: Juan Pérez"
+                  required
+                />
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Teléfono (WhatsApp)</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="phone"
+                  placeholder="+56912345678"
+                  required
+                />
+                <div class="form-text">Te enviaremos la confirmación aquí.</div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Fecha y Hora</label>
+                <input
+                  type="datetime-local"
+                  class="form-control"
+                  id="date"
+                  required
+                />
+              </div>
+
+              <div class="d-grid">
+                <button type="submit" class="btn btn-success btn-lg">
+                  Confirmar Reserva
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="app.js"></script>
   </body>
 </html>

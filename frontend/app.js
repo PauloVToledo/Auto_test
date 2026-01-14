@@ -1,57 +1,170 @@
 const API_URL = "http://127.0.0.1:8000/api/v1";
+let bookingModal;
+let allVehicles = []; // 1. Variable Global para guardar los autos
 
-// 1. Fetch and Display Vehicles on Load
 document.addEventListener("DOMContentLoaded", async () => {
+  // Configurar Modal
+  const modalEl = document.getElementById("bookingModal");
+  if (modalEl) bookingModal = new bootstrap.Modal(modalEl);
+
+  // Cargar Autos
   const listContainer = document.getElementById("car-list");
-
-  try {
-    const response = await fetch(`${API_URL}/vehicles`);
-    if (!response.ok) throw new Error("Error connecting to server");
-
-    const vehicles = await response.json();
-    listContainer.innerHTML = ""; // Clear loading text
-
-    vehicles.forEach((car) => {
-      const card = document.createElement("div");
-      card.className = "car-card";
-      card.innerHTML = `
-                <h3>${car.brand} ${car.model}</h3>
-                <p>Año: ${car.year} | Color: ${car.color}</p>
-                <p>KM: ${car.mileage}</p>
-                <div class="price">$${car.price.toLocaleString()}</div>
-                <button onclick="openBooking(${car.id}, '${car.brand} ${
-        car.model
-      }')">
-                    Agendar Visita
-                </button>
-            `;
-      listContainer.appendChild(card);
-    });
-  } catch (error) {
-    listContainer.innerHTML = `<p style="color:red">Error: ${error.message}. Is Backend running?</p>`;
+  if (listContainer) {
+    await fetchAndSetupVehicles(listContainer);
   }
+
+  // Configurar Eventos de Filtros
+  setupFilterEvents();
 });
 
-// 2. Modal Logic
-const modal = document.getElementById("booking-modal");
-const closeBtn = document.querySelector(".close-btn");
+// --- LÓGICA DE CARGA Y RENDERIZADO ---
 
-function openBooking(id, name) {
-  document.getElementById("vehicle_id").value = id;
-  document.getElementById("selected-car-text").innerText = "Auto: " + name;
-  modal.style.display = "block";
+async function fetchAndSetupVehicles(container) {
+  try {
+    const response = await fetch(`${API_URL}/vehicles`);
+    allVehicles = await response.json(); // Guardamos en memoria
+
+    // Llenar los Selects (Marca y Año) dinámicamente según lo que haya en BD
+    populateDropdowns();
+
+    // Renderizar todos inicialmente
+    renderVehicles(allVehicles);
+  } catch (error) {
+    container.innerHTML = `<div class="alert alert-danger">Error cargando autos: ${error.message}</div>`;
+  }
 }
 
-closeBtn.onclick = () => (modal.style.display = "none");
-window.onclick = (e) => {
-  if (e.target == modal) modal.style.display = "none";
+function renderVehicles(vehiclesToRender) {
+  const container = document.getElementById("car-list");
+  container.innerHTML = ""; // Limpiar contenedor
+
+  if (vehiclesToRender.length === 0) {
+    container.innerHTML = `<div class="col-12 text-center py-5 text-muted"><h4>😕 No se encontraron vehículos con esos filtros.</h4></div>`;
+    return;
+  }
+
+  vehiclesToRender.forEach((car) => {
+    const col = document.createElement("div");
+    col.className = "col";
+    col.innerHTML = `
+            <div class="card h-100">
+                <div class="card-img-top">
+                    <span style="font-size:3rem">🚗</span>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">${car.brand} ${car.model}</h5>
+                    <p class="card-text text-muted">${car.year} • ${
+      car.color
+    }</p>
+                    <h4 class="text-primary fw-bold">$${car.price.toLocaleString()}</h4>
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <small class="text-muted">KM: ${car.mileage}</small>
+                        <button class="btn btn-primary" 
+                            onclick="openBooking(${car.id}, '${car.brand} ${
+      car.model
+    }')">
+                            Agendar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    container.appendChild(col);
+  });
+}
+
+// --- LÓGICA DE FILTROS ---
+
+function populateDropdowns() {
+  const brandSelect = document.getElementById("filter-brand");
+  const yearSelect = document.getElementById("filter-year");
+
+  // Obtener valores únicos usando Set
+  const brands = [...new Set(allVehicles.map((car) => car.brand))].sort();
+  const years = [...new Set(allVehicles.map((car) => car.year))].sort(
+    (a, b) => b - a
+  ); // Orden descendente
+
+  // Llenar Marcas
+  brands.forEach((brand) => {
+    const option = document.createElement("option");
+    option.value = brand;
+    option.textContent = brand; // Convertir primera letra a mayuscula si se desea
+    brandSelect.appendChild(option);
+  });
+
+  // Llenar Años
+  years.forEach((year) => {
+    const option = document.createElement("option");
+    option.value = year;
+    option.textContent = year;
+    yearSelect.appendChild(option);
+  });
+}
+
+function setupFilterEvents() {
+  const brandSelect = document.getElementById("filter-brand");
+  const yearSelect = document.getElementById("filter-year");
+  const priceInput = document.getElementById("filter-price");
+  const priceDisplay = document.getElementById("price-value");
+  const resetBtn = document.getElementById("btn-reset");
+
+  if (!brandSelect) return; // Si estamos en about.html, salir
+
+  // Evento Slider de Precio (Visual)
+  priceInput.addEventListener("input", (e) => {
+    priceDisplay.innerText = "$" + parseInt(e.target.value).toLocaleString();
+    applyFilters(); // Filtrar en tiempo real mientras deslizas
+  });
+
+  // Eventos Selects
+  brandSelect.addEventListener("change", applyFilters);
+  yearSelect.addEventListener("change", applyFilters);
+
+  // Evento Reset
+  resetBtn.addEventListener("click", () => {
+    brandSelect.value = "all";
+    yearSelect.value = "all";
+    priceInput.value = 90000;
+    priceDisplay.innerText = "$90,000";
+    renderVehicles(allVehicles); // Volver a mostrar todos
+  });
+}
+
+function applyFilters() {
+  const selectedBrand = document.getElementById("filter-brand").value;
+  const selectedYear = document.getElementById("filter-year").value;
+  const maxPrice = parseInt(document.getElementById("filter-price").value);
+
+  // La lógica de filtrado pura
+  const filtered = allVehicles.filter((car) => {
+    const matchBrand = selectedBrand === "all" || car.brand === selectedBrand;
+    const matchYear =
+      selectedYear === "all" || car.year.toString() === selectedYear;
+    const matchPrice = car.price <= maxPrice;
+
+    return matchBrand && matchYear && matchPrice;
+  });
+
+  renderVehicles(filtered);
+}
+
+// --- MODAL Y FORMULARIO (Igual que antes) ---
+
+window.openBooking = function (id, name) {
+  document.getElementById("vehicle_id").value = id;
+  document.getElementById("selected-car-text").innerText = "Vehículo: " + name;
+  bookingModal.show();
 };
 
-// 3. Handle Form Submit (Create Appointment)
-document
-  .getElementById("booking-form")
-  .addEventListener("submit", async (e) => {
+const form = document.getElementById("booking-form");
+if (form) {
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
+    const btn = form.querySelector("button[type='submit']");
+    const originalText = btn.innerText;
+    btn.disabled = true;
+    btn.innerText = "Enviando...";
 
     const data = {
       vehicle_id: parseInt(document.getElementById("vehicle_id").value),
@@ -68,15 +181,18 @@ document
       });
 
       if (response.ok) {
-        alert(
-          "✅ Cita Creada! Revisa la consola del backend para ver la notificación."
-        );
-        modal.style.display = "none";
+        alert("✅ ¡Cita Confirmada!");
+        bookingModal.hide();
+        form.reset();
       } else {
         const err = await response.json();
-        alert("❌ Error: " + JSON.stringify(err));
+        alert("❌ Error: " + (err.detail || "Error desconocido"));
       }
     } catch (error) {
       alert("Error de red: " + error.message);
+    } finally {
+      btn.disabled = false;
+      btn.innerText = originalText;
     }
   });
+}
