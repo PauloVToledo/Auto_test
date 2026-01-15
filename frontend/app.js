@@ -2,6 +2,46 @@ const API_URL = "http://127.0.0.1:8000/api/v1";
 let bookingModal;
 let allVehicles = []; // 1. Variable Global para guardar los autos
 
+import { carImages } from "./dictionary.js";
+
+// Cache para almacenar imágenes ya validadas y no repetir peticiones
+const validatedBrands = {};
+
+// Función de validación de imágenes
+function validateImages(urls, fallback) {
+  return Promise.all(
+    urls.map(
+      (url) =>
+        new Promise((resolve) => {
+          const img = new Image();
+          img.onload = () => resolve(url);
+          img.onerror = () => resolve(null);
+          img.src = url;
+        })
+    )
+  ).then((results) => {
+    const valid = results.filter(Boolean);
+    return valid.length ? valid : [fallback];
+  });
+}
+
+// Función auxiliar para obtener imagen según marca
+async function getCarImage(brand, model, carId) {
+  // Normalizamos a minúsculas para evitar errores
+  const key = brand.toLowerCase();
+
+  if (!validatedBrands[key]) {
+    const images = carImages[key] || carImages["default"];
+    const fallback = carImages["default"][0];
+    validatedBrands[key] = await validateImages(images, fallback);
+  }
+
+  const validImages = validatedBrands[key];
+  const index = carId % validImages.length;
+
+  return validImages[index];
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
   // Configurar Modal
   const modalEl = document.getElementById("bookingModal");
@@ -28,42 +68,73 @@ async function fetchAndSetupVehicles(container) {
     populateDropdowns();
 
     // Renderizar todos inicialmente
-    renderVehicles(allVehicles);
+    await renderVehicles(allVehicles);
   } catch (error) {
     container.innerHTML = `<div class="alert alert-danger">Error cargando autos: ${error.message}</div>`;
   }
 }
 
-function renderVehicles(vehiclesToRender) {
+async function renderVehicles(vehiclesToRender) {
   const container = document.getElementById("car-list");
-  container.innerHTML = ""; // Limpiar contenedor
+  container.innerHTML = "";
 
   if (vehiclesToRender.length === 0) {
-    container.innerHTML = `<div class="col-12 text-center py-5 text-muted"><h4>😕 No se encontraron vehículos con esos filtros.</h4></div>`;
+    container.innerHTML = `<div class="col-12 text-center py-5 text-muted"><h4>😕 No se encontraron vehículos.</h4></div>`;
     return;
   }
 
-  vehiclesToRender.forEach((car) => {
+  // Pre-cargamos las imágenes validadas
+  const carsWithImages = await Promise.all(
+    vehiclesToRender.map(async (car) => {
+      const imageUrl = await getCarImage(car.brand, car.model, car.id);
+      return { car, imageUrl };
+    })
+  );
+
+  carsWithImages.forEach(({ car, imageUrl }) => {
     const col = document.createElement("div");
     col.className = "col";
     col.innerHTML = `
-            <div class="card h-100">
-                <div class="card-img-top">
-                    <span style="font-size:3rem">🚗</span>
+            <div class="card h-100 shadow-sm border-0">
+                <!-- IMAGEN REAL AQUÍ -->
+                <div class="card-img-wrapper" style="position: relative; overflow: hidden; border-radius: 12px 12px 0 0;">
+                    <img src="${imageUrl}" class="card-img-top" alt="${
+      car.brand
+    }" style="height: 220px; object-fit: cover; width: 100%;">
+                    
+                    <!-- Etiqueta de precio flotante -->
+                    <span class="badge bg-dark position-absolute bottom-0 end-0 m-3 py-2 px-3 shadow" style="font-size: 1rem;">
+                        $${car.price.toLocaleString()}
+                    </span>
                 </div>
+
                 <div class="card-body">
-                    <h5 class="card-title">${car.brand} ${car.model}</h5>
-                    <p class="card-text text-muted">${car.year} • ${
-      car.color
-    }</p>
-                    <h4 class="text-primary fw-bold">$${car.price.toLocaleString()}</h4>
-                    <div class="d-flex justify-content-between align-items-center mt-3">
-                        <small class="text-muted">KM: ${car.mileage}</small>
-                        <button class="btn btn-primary" 
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div>
+                            <h5 class="card-title fw-bold mb-0">${car.brand} ${
+      car.model
+    }</h5>
+                            <small class="text-muted text-uppercase" style="letter-spacing: 1px;">${
+                              car.brand
+                            }</small>
+                        </div>
+                        <span class="badge bg-light text-dark border">${
+                          car.year
+                        }</span>
+                    </div>
+                    
+                    <div class="d-flex align-items-center text-muted small mb-3">
+                        <span class="me-3">🎨 ${car.color}</span>
+                        <span>🛣️ ${car.mileage} km</span>
+                    </div>
+
+                    <div class="d-grid">
+                        <button class="btn btn-primary fw-bold" 
+                            style="border-radius: 50px;"
                             onclick="openBooking(${car.id}, '${car.brand} ${
       car.model
     }')">
-                            Agendar
+                            Agendar Visita
                         </button>
                     </div>
                 </div>
