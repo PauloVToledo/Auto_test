@@ -7,6 +7,9 @@ from app.core.database import get_db
 from app.models.appointment import Appointment
 from app.models.vehicle import Vehicle
 
+import structlog
+
+logger = structlog.get_logger()
 
 router = APIRouter()
 
@@ -17,14 +20,22 @@ def create_appointment(
     background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
 ):
+
+    # Enlazar datos específicos de este paso al log
+    # Todo log subsecuente tendrá 'vehicle_id' pegado automáticamente
+    log = logger.bind(
+        vehicle_id=booking.vehicle_id, customer_phone=booking.customer_phone
+    )
+    log.info("appointment_request_received", msg="Iniciando proceso de reserva")
+
     # 1. IMPRIMIR POR CONSOLA (Lo que pediste)
-    print("\n" + "=" * 40)
-    print(f"🔔 NUEVA SOLICITUD DE CITA RECIBIDA")
-    print(f"🚗 ID Auto: {booking.vehicle_id}")
-    print(f"📄 Nombre: {booking.customer_name}")
-    print(f"📱 WhatsApp: {booking.customer_phone}")
-    print(f"📅 Fecha: {booking.date}")
-    print("=" * 40 + "\n")
+    # print("\n" + "=" * 40)
+    # print(f"🔔 NUEVA SOLICITUD DE CITA RECIBIDA")
+    # print(f"🚗 ID Auto: {booking.vehicle_id}")
+    # print(f"📄 Nombre: {booking.customer_name}")
+    # print(f"📱 WhatsApp: {booking.customer_phone}")
+    # print(f"📅 Fecha: {booking.date}")
+    # print("=" * 40 + "\n")
 
     # 2. GUARDAR EN BASE DE DATOS
     try:
@@ -38,6 +49,9 @@ def create_appointment(
         db.add(new_appointment)
         db.commit()  # Confirma los cambios
         db.refresh(new_appointment)  # Recarga el objeto con el ID generado.
+
+        # Log de éxito estructurado
+        log.info("appointment_saved_db", appointment_id=new_appointment.id)
 
     except Exception as e:
         db.rollback()  # Si falla, deshacer cambios
@@ -73,5 +87,6 @@ def create_appointment(
         date_str=date_formatted,
         vehicle_info=vehicle_str,
     )
+    log.info("notifications_queued", channels=["whatsapp", "email"])
 
     return {"status": "success", "msg": "Cita creada y notificación enviada"}

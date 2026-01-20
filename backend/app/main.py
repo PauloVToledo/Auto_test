@@ -1,10 +1,21 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.api.v1.api import api_router
 
 from contextlib import asynccontextmanager
 from app.core.database import engine, Base
+
+from app.core.logging import configure_logging
+
+import structlog
+import time
+import uuid
+
+
+# 1. INICIAR EL LOGGER
+configure_logging()
+logger = structlog.get_logger()
 
 # uvicorn app.main:app --reload   --> to run the app
 
@@ -33,6 +44,50 @@ app.add_middleware(
     allow_methods=["*"],  # Permitir todos los métodos (GET, POST, PUT, DELETE)
     allow_headers=["*"],  # Permitir todos los headers
 )
+
+
+# 2. MIDDLEWARE DE LOGGING (Interceptor)
+@app.middleware("http")
+async def logging_middleware(request: Request, call_next):
+    # Generar un ID único para esta petición (Tracing)
+    request_id = str(uuid.uuid4())
+
+    # Limpiar contexto previo y vincular el ID
+    structlog.contextvars.clear_contextvars()
+    structlog.contextvars.bind_contextvars(
+        request_id=request_id,
+        method=request.method,
+        path=request.url.path,
+        client_ip=request.client.host,
+    )
+
+    start_time = time.time()
+
+    try:
+        # Ejecutar la petición real
+        response = call_next(request)
+        # Si es una corrutina (async), esperar
+        if hasattr(response, "__await__"):
+            response = await response
+
+        process_time = time.time() - start_time
+
+        # Loguear el resultado (SUCCESS)
+        logger.info(
+            "http_request",
+            status_code=response.status_code,
+            duration=round(process_time, 4),
+        )
+        return response
+
+    except Exception as e:
+        # Loguear errores no controlados (CRITICAL)
+        process_time = time.time() - start_time
+        logger.error(
+            "http_request_failed", error=str(e), duration=round(process_time, 4)
+        )
+        raise e
+
 
 # 3. Incluir las Rutas (Endpoints)
 # Aquí conectamos toda la lógica de tus citas y WhatsApp
