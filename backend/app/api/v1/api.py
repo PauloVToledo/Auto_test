@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from app.api.v1.endpoints import vehicles
-from app.api.v1.endpoints import vehicles, appointments
+from app.api.v1.endpoints import vehicles, appointments, chat
 
 api_router = APIRouter()
 
@@ -15,6 +15,4 @@ api_router.include_router(
     appointments.router, prefix="/appointments", tags=["appointments"]
 )
 
-# @api_router.get("/test")
-# def test_route():
-#     return {"msg": "El router API v1 está funcionando correctamente"}
+api_router.include_router(chat.router, prefix="/chat", tags=["chat"])

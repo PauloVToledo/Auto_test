@@ -1,0 +1,30 @@
+name: Backend QA
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: |
+          cd backend
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest httpx structlog
+
+      - name: Run Tests
+        run: |
+          cd backend
+          # Ejecutamos pytest. Nota: No necesitamos levantar Postgres real
+          # porque configuramos SQLite en memoria en conftest.py ;)
+          pytest -v

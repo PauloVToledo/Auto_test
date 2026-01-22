@@ -34,6 +34,7 @@ app = FastAPI(
 origins = [
     "http://localhost:3000",  # Tu frontend en desarrollo
     "http://127.0.0.1:3000",
+    "*",
     # Aquí agregarás tu dominio real cuando despliegues (ej: https://mi-automotora.com)
 ]
 

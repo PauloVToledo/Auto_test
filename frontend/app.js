@@ -17,8 +17,8 @@ function validateImages(urls, fallback) {
           img.onload = () => resolve(url);
           img.onerror = () => resolve(null);
           img.src = url;
-        })
-    )
+        }),
+    ),
   ).then((results) => {
     const valid = results.filter(Boolean);
     return valid.length ? valid : [fallback];
@@ -88,7 +88,7 @@ async function renderVehicles(vehiclesToRender) {
     vehiclesToRender.map(async (car) => {
       const imageUrl = await getCarImage(car.brand, car.model, car.id);
       return { car, imageUrl };
-    })
+    }),
   );
 
   carsWithImages.forEach(({ car, imageUrl }) => {
@@ -99,8 +99,8 @@ async function renderVehicles(vehiclesToRender) {
                 <!-- IMAGEN REAL AQUÍ -->
                 <div class="card-img-wrapper" style="position: relative; overflow: hidden; border-radius: 12px 12px 0 0;">
                     <img src="${imageUrl}" class="card-img-top" alt="${
-      car.brand
-    }" style="height: 220px; object-fit: cover; width: 100%;">
+                      car.brand
+                    }" style="height: 220px; object-fit: cover; width: 100%;">
                     
                     <!-- Etiqueta de precio flotante -->
                     <span class="badge bg-dark position-absolute bottom-0 end-0 m-3 py-2 px-3 shadow" style="font-size: 1rem;">
@@ -112,8 +112,8 @@ async function renderVehicles(vehiclesToRender) {
                     <div class="d-flex justify-content-between align-items-start mb-2">
                         <div>
                             <h5 class="card-title fw-bold mb-0">${car.brand} ${
-      car.model
-    }</h5>
+                              car.model
+                            }</h5>
                             <small class="text-muted text-uppercase" style="letter-spacing: 1px;">${
                               car.brand
                             }</small>
@@ -132,8 +132,8 @@ async function renderVehicles(vehiclesToRender) {
                         <button class="btn btn-primary fw-bold" 
                             style="border-radius: 50px;"
                             onclick="openBooking(${car.id}, '${car.brand} ${
-      car.model
-    }')">
+                              car.model
+                            }')">
                             Agendar Visita
                         </button>
                     </div>
@@ -153,7 +153,7 @@ function populateDropdowns() {
   // Obtener valores únicos usando Set
   const brands = [...new Set(allVehicles.map((car) => car.brand))].sort();
   const years = [...new Set(allVehicles.map((car) => car.year))].sort(
-    (a, b) => b - a
+    (a, b) => b - a,
   ); // Orden descendente
 
   // Llenar Marcas
@@ -266,4 +266,97 @@ if (form) {
       btn.innerText = originalText;
     }
   });
+}
+
+// --- LÓGICA DEL CHATBOT (GLOBAL) ---
+
+// 1. Asignamos a window para que el HTML pueda verlas sí o sí
+window.toggleChat = function () {
+  const chatWindow = document.getElementById("chat-window");
+  if (!chatWindow) {
+    console.error("No se encontró el elemento chat-window");
+    return;
+  }
+
+  if (chatWindow.style.display === "none" || chatWindow.style.display === "") {
+    chatWindow.style.display = "block";
+    // Poner foco en el input al abrir
+    setTimeout(() => document.getElementById("chat-input").focus(), 100);
+  } else {
+    chatWindow.style.display = "none";
+  }
+};
+
+window.handleEnter = function (e) {
+  if (e.key === "Enter") window.sendMessage();
+};
+
+window.sendMessage = async function () {
+  const input = document.getElementById("chat-input");
+  const message = input.value.trim();
+  if (!message) return;
+
+  // 1. Mostrar mensaje del usuario
+  addMessageToChat(message, "user");
+  input.value = "";
+  input.disabled = true;
+
+  // 2. Mostrar "Escribiendo..."
+  const loadingId = addMessageToChat("Pensando... 🤔", "bot", true);
+
+  try {
+    const response = await fetch(`${API_URL}/chat/`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: message }),
+    });
+
+    const data = await response.json();
+
+    removeMessage(loadingId);
+    addMessageToChat(data.response, "bot");
+  } catch (error) {
+    console.error(error);
+    removeMessage(loadingId);
+    addMessageToChat(
+      "Error de conexión ❌. ¿Está corriendo el backend?",
+      "bot",
+    );
+  } finally {
+    input.disabled = false;
+    input.focus();
+  }
+};
+
+// Funciones auxiliares (no necesitan window, pero las usamos dentro de las otras)
+function addMessageToChat(text, sender, isLoading = false) {
+  const container = document.getElementById("chat-messages");
+  const div = document.createElement("div");
+  const msgId = "msg-" + Date.now();
+  div.id = msgId;
+
+  const isUser = sender === "user";
+  div.className = `d-flex ${isUser ? "justify-content-end" : "align-items-start"} mb-2`;
+
+  const bubbleColor = isUser
+    ? "bg-primary text-white"
+    : "bg-white text-dark border";
+
+  // Convertir saltos de línea a <br> para que se vea bien el formato de la IA
+  const formattedText = text.replace(/\n/g, "<br>");
+
+  div.innerHTML = `
+        <div class="${bubbleColor} p-2 rounded shadow-sm" style="max-width: 80%;">
+            ${formattedText}
+        </div>
+    `;
+
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+  return msgId;
+}
+
+function removeMessage(id) {
+  const el = document.getElementById(id);
+  if (el) el.remove();
 }

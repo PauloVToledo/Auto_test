@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: usuario
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: automotora_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build: ./backend
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    volumes:
+      - ./backend:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://usuario:password@db:5432/automotora_db
+      # Agrega aquí tus otras variables (Twilio, Google, etc)
+      # - TWILIO_ACCOUNT_SID= put_your_sid_here
+      # - TWILIO_AUTH_TOKEN= put_your_token_here
+      # - GOOGLE_API_KEY=AIzaSy...
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    depends_on:
+      - db
+
+  
+  # 3. Frontend (Nginx - Nuevo)
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:80" # Mapeamos el puerto 3000 de tu PC al 80 del contenedor
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
