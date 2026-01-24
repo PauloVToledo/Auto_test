@@ -26,5 +26,5 @@ jobs:
         run: |
           cd backend
           # Ejecutamos pytest. Nota: No necesitamos levantar Postgres real
-          # porque configuramos SQLite en memoria en conftest.py ;)
+          # porque configuramos SQLite en memoria en conftest.py
           pytest -v
