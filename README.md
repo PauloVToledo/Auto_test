@@ -4,26 +4,26 @@ This project is a full-stack web application for a car dealership. It features a
 
 ## 🚀 Features
 
--   **Vehicle Catalog**: Browse, view, and filter available vehicles by brand, year, and price.
--   **Appointment Booking**: Customers can easily schedule appointments to see specific vehicles.
--   **AI Chatbot**: An integrated chatbot, powered by Google's Gemini API, answers customer questions in real-time.
--   **WhatsApp Integration**: Capable of sending booking confirmations via WhatsApp (requires Twilio configuration).
--   **RESTful API**: A well-documented FastAPI backend provides data to the frontend.
--   **Containerized**: Uses Docker and Docker Compose for a consistent development and production environment.
+- **Vehicle Catalog**: Browse, view, and filter available vehicles by brand, year, and price.
+- **Appointment Booking**: Customers can easily schedule appointments to see specific vehicles.
+- **AI Chatbot**: An integrated chatbot, powered by Google's Gemini API, answers customer questions in real-time.
+- **WhatsApp Integration**: Capable of sending booking confirmations via WhatsApp (requires Twilio configuration).
+- **RESTful API**: A well-documented FastAPI backend provides data to the frontend.
+- **Containerized**: Uses Docker and Docker Compose for a consistent development and production environment.
 
 ## 🛠️ Tech Stack
 
--   **Backend**:
-    -   **Framework**: FastAPI
-    -   **Language**: Python 3.11
-    -   **Database**: PostgreSQL
-    -   **ORM**: SQLAlchemy with Alembic for migrations
-    -   **Validation**: Pydantic
--   **Frontend**:
-    -   HTML5, CSS3, Vanilla JavaScript
-    -   Bootstrap 5 for styling
--   **DevOps**:
-    -   Docker & Docker Compose
+- **Backend**:
+  - **Framework**: FastAPI
+  - **Language**: Python 3.11
+  - **Database**: PostgreSQL
+  - **ORM**: SQLAlchemy with Alembic for migrations
+  - **Validation**: Pydantic
+- **Frontend**:
+  - HTML5, CSS3, Vanilla JavaScript
+  - Bootstrap 5 for styling
+- **DevOps**:
+  - Docker & Docker Compose
 
 ## 🏁 Getting Started
 
@@ -31,14 +31,15 @@ Follow these instructions to get the project up and running on your local machin
 
 ### Prerequisites
 
--   [Docker](https://www.docker.com/get-started)
--   [Docker Compose](https://docs.docker.com/compose/install/)
--   [Git](https://git-scm.com/)
--   A Google [Gemini API Key](https://ai.google.dev/)
+- [Docker](https://www.docker.com/get-started)
+- [Docker Compose](https://docs.docker.com/compose/install/)
+- [Git](https://git-scm.com/)
+- A Google [Gemini API Key](https://ai.google.dev/)
 
 ### Installation
 
 1.  **Clone the repository:**
+
     ```bash
     git clone <repository-url>
     cd <repository-folder>
@@ -56,6 +57,7 @@ Follow these instructions to get the project up and running on your local machin
     # TWILIO_AUTH_TOKEN=your_twilio_token
     # GOOGLE_API_KEY=your_google_api_key
     ```
+
     Replace `your_gemini_api_key_here` with your actual Gemini API key.
 
 3.  **Build and run the containers:**
@@ -65,15 +67,15 @@ Follow these instructions to get the project up and running on your local machin
     docker-compose up -d --build
     ```
 
-    -   The `-d` flag runs the containers in detached mode.
-    -   The `--build` flag forces a rebuild of the images if the Dockerfiles have changed.
+    - The `-d` flag runs the containers in detached mode.
+    - The `--build` flag forces a rebuild of the images if the Dockerfiles have changed.
 
 ### Usage
 
 Once the containers are running, you can access the different parts of the application:
 
--   **Frontend Application**: Open your browser and navigate to `http://localhost:3000`
--   **Backend API Docs**: The FastAPI backend provides automatic interactive documentation. Access it at `http://localhost:8000/docs`
+- **Frontend Application**: Open your browser and navigate to `http://localhost:3000`
+- **Backend API Docs**: The FastAPI backend provides automatic interactive documentation. Access it at `http://localhost:8000/docs`
 
 ## 📂 Project Structure
 
