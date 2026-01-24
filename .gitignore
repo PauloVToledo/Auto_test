@@ -31,8 +31,7 @@ Thumbs.db
 .vscode/
 .idea/
 
-# Text files
-*.txt
+
 
 # Tests
 test_db
