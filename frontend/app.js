@@ -232,6 +232,20 @@ const form = document.getElementById("booking-form");
 if (form) {
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
+
+    // --- NUEVA VALIDACIÓN DE HORA ---
+    const dateInput = document.getElementById("date").value;
+    const selectedDate = new Date(dateInput);
+    const hour = selectedDate.getHours();
+
+    // Validar rango (9 a 17:59)
+    if (hour < 9 || hour >= 18) {
+      alert(
+        "⛔ Horario no válido.\n\nNuestras sucursales atienden de 09:00 AM a 18:00 PM.\nPor favor selecciona otro horario.",
+      );
+      return; // Detiene el envío, no llama al backend
+    }
+
     const btn = form.querySelector("button[type='submit']");
     const originalText = btn.innerText;
     btn.disabled = true;
@@ -240,6 +254,7 @@ if (form) {
     const data = {
       vehicle_id: parseInt(document.getElementById("vehicle_id").value),
       customer_name: document.getElementById("name").value,
+      customer_email: document.getElementById("email").value,
       customer_phone: document.getElementById("phone").value,
       date: document.getElementById("date").value,
     };
@@ -360,3 +375,48 @@ function removeMessage(id) {
   const el = document.getElementById(id);
   if (el) el.remove();
 }
+
+// --- DARK MODE LOGIC ---
+
+document.addEventListener("DOMContentLoaded", () => {
+  const toggleBtn = document.getElementById("theme-toggle");
+  const body = document.body;
+
+  // 1. Verificar preferencia guardada en LocalStorage
+  const savedTheme = localStorage.getItem("theme");
+
+  // Si hay tema guardado 'dark', o si no hay nada pero el sistema operativo prefiere oscuro
+  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+  if (savedTheme === "dark" || (!savedTheme && prefersDark)) {
+    enableDarkMode();
+  } else {
+    disableDarkMode(); // Asegurar estado inicial
+  }
+
+  // 2. Evento Click
+  if (toggleBtn) {
+    toggleBtn.addEventListener("click", () => {
+      if (body.classList.contains("dark-mode")) {
+        disableDarkMode();
+      } else {
+        enableDarkMode();
+      }
+    });
+  }
+
+  // Funciones auxiliares
+  function enableDarkMode() {
+    body.classList.add("dark-mode");
+    localStorage.setItem("theme", "dark");
+    if (toggleBtn) toggleBtn.innerHTML = "☀️"; // Icono de Sol para volver a luz
+    if (toggleBtn) toggleBtn.style.borderColor = "rgba(255,255,255,0.5)";
+  }
+
+  function disableDarkMode() {
+    body.classList.remove("dark-mode");
+    localStorage.setItem("theme", "light");
+    if (toggleBtn) toggleBtn.innerHTML = "🌙"; // Icono de Luna para ir a oscuro
+    if (toggleBtn) toggleBtn.style.borderColor = "rgba(0,0,0,0.1)";
+  }
+});

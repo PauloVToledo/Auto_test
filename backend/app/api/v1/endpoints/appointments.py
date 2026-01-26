@@ -43,6 +43,7 @@ def create_appointment(
             vehicle_id=booking.vehicle_id,
             customer_name=booking.customer_name,
             customer_phone=booking.customer_phone,
+            customer_email=booking.customer_email,
             date=booking.date,
         )
 
@@ -83,10 +84,21 @@ def create_appointment(
     background_tasks.add_task(
         gmail_service.send_seller_notification,  # <--- USAMOS EL NUEVO SERVICIO
         client_name=booking.customer_name,
+        client_email=booking.customer_email,
         client_phone=booking.customer_phone,
         date_str=date_formatted,
         vehicle_info=vehicle_str,
     )
+
+    # C. Email al Cliente (Confirmación) <--- NUEVA TAREA
+    background_tasks.add_task(
+        gmail_service.send_customer_confirmation,
+        to_email=booking.customer_email,
+        client_name=booking.customer_name,
+        date_str=date_formatted,
+        vehicle_info=vehicle_str,
+    )
+
     log.info("notifications_queued", channels=["whatsapp", "email"])
 
     return {"status": "success", "msg": "Cita creada y notificación enviada"}

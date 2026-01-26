@@ -9,6 +9,7 @@ class Appointment(Base):
     id = Column(Integer, primary_key=True, index=True)
     vehicle_id = Column(Integer, ForeignKey("vehicles.id"))  # Relación con el auto
     customer_phone = Column(String)
+    customer_email = Column(String)
     customer_name = Column(String)
     date = Column(DateTime)
 
