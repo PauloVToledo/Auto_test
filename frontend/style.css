@@ -48,7 +48,9 @@ body {
 
 /* --- Estilos de las Tarjetas de Autos --- */
 .card {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
   border: none;
   background: #fff;
   border-radius: 12px; /* Bordes más suaves en las tarjetas */
@@ -154,4 +156,86 @@ body {
   color: #1d1e1f;
   margin-bottom: 8px;
   display: block;
+}
+
+/* --- DARK MODE SYSTEM --- */
+
+/* 1. Transiciones Suaves Globales */
+body,
+.card,
+.modal-content,
+.form-control,
+.form-select,
+.navbar,
+.filter-card {
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+/* 2. Estilos del Modo Oscuro (Activado por JS) */
+body.dark-mode {
+  background-color: #121212; /* Fondo principal (No negro puro) */
+  color: #e0e0e0; /* Texto gris claro (No blanco puro para evitar fatiga) */
+}
+
+/* Tarjetas y Modales en Modo Oscuro */
+body.dark-mode .card,
+body.dark-mode .modal-content,
+body.dark-mode .filter-card {
+  background-color: #1e1e1e; /* Un gris un poco más claro para elevar */
+  color: #e0e0e0;
+  border-color: #333;
+}
+
+/* Inputs y Selects en Modo Oscuro */
+body.dark-mode .form-control,
+body.dark-mode .form-select {
+  background-color: #2d2d2d;
+  border-color: #444;
+  color: #fff;
+}
+
+body.dark-mode .form-control:focus,
+body.dark-mode .form-select:focus {
+  background-color: #333;
+  border-color: #0d6efd;
+  color: #fff;
+}
+
+/* Títulos y Textos Secundarios */
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4,
+body.dark-mode h5 {
+  color: #ffffff;
+}
+
+body.dark-mode .text-muted,
+body.dark-mode .text-secondary {
+  color: #a0a0a0 !important;
+}
+
+/* Ajuste del botón Toggle en la Navbar */
+#theme-toggle {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: transform 0.2s;
+  color: white;
+}
+
+#theme-toggle:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: scale(1.1);
 }
