@@ -33,6 +33,14 @@
               <a class="nav-link" href="about.html">Sobre el Proyecto</a>
             </li>
           </ul>
+
+          <!-- Botón Dark Mode (A la derecha usando ms-lg-auto) -->
+          <div class="d-flex ms-lg-auto align-items-center">
+            <button id="theme-toggle" title="Cambiar Tema">
+              <!-- El icono se inyectará por JS -->
+              🌙
+            </button>
+          </div>
         </div>
       </div>
     </nav>
@@ -156,8 +164,23 @@
                 />
               </div>
 
+              <!-- NUEVO CAMPO EMAIL -->
               <div class="mb-3">
-                <label class="form-label">Teléfono (WhatsApp)</label>
+                <label class="form-label">Correo Electrónico</label>
+                <input
+                  type="email"
+                  class="form-control"
+                  id="email"
+                  placeholder="juan@ejemplo.com"
+                  required
+                />
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label"
+                  >Teléfono (WhatsApp) --> Twilio no disponible por cobre de
+                  API</label
+                >
                 <input
                   type="text"
                   class="form-control"
@@ -176,6 +199,10 @@
                   id="date"
                   required
                 />
+                <!-- Texto de ayuda nuevo -->
+                <div class="form-text text-primary">
+                  🕗 Horario de atención: Lunes a Domingo de 09:00 a 18:00 hrs.
+                </div>
               </div>
 
               <div class="d-grid">
