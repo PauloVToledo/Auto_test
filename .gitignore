@@ -40,3 +40,5 @@ test_db_read.py
 # Gmail Service
 credentials.json
 token.json
+
+generate_token.py
