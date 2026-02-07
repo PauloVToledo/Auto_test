@@ -9,9 +9,30 @@ from app.models.vehicle import Vehicle
 
 import structlog
 
+from typing import List
+from datetime import date as date_type
+from sqlalchemy import func
+
 logger = structlog.get_logger()
 
 router = APIRouter()
+
+
+@router.get("/availability")
+def get_available_slots(look_date: date_type, db: Session = Depends(get_db)):
+    """
+    Retorna las horas YA OCUPADAS para una fecha específica.
+    """
+    # Buscamos citas en ese día exacto
+    # Nota: Casteamos el campo DateTime a Date para comparar
+    appointments = (
+        db.query(Appointment).filter(func.date(Appointment.date) == look_date).all()
+    )
+
+    # Extraemos solo la hora (ej: 9, 10, 15) de las citas existentes
+    occupied_hours = [appt.date.hour for appt in appointments]
+
+    return {"occupied_hours": occupied_hours}
 
 
 @router.post("/")

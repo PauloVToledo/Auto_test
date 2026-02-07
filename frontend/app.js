@@ -233,18 +233,18 @@ if (form) {
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    // --- NUEVA VALIDACIÓN DE HORA ---
-    const dateInput = document.getElementById("date").value;
-    const selectedDate = new Date(dateInput);
-    const hour = selectedDate.getHours();
+    const datePart = document.getElementById("date-picker").value; // "2023-10-25"
+    const timePart = document.getElementById("time-select").value; // "10:00"
 
-    // Validar rango (9 a 17:59)
-    if (hour < 9 || hour >= 18) {
-      alert(
-        "⛔ Horario no válido.\n\nNuestras sucursales atienden de 09:00 AM a 18:00 PM.\nPor favor selecciona otro horario.",
-      );
-      return; // Detiene el envío, no llama al backend
+    if (!datePart || !timePart) {
+      alert("⚠️ Por favor completa fecha y hora.");
+      // Restaurar botón
+      btn.disabled = false;
+      btn.innerText = originalText;
+      return;
     }
+
+    const finalDateTime = `${datePart}T${timePart}:00`;
 
     const btn = form.querySelector("button[type='submit']");
     const originalText = btn.innerText;
@@ -256,7 +256,7 @@ if (form) {
       customer_name: document.getElementById("name").value,
       customer_email: document.getElementById("email").value,
       customer_phone: document.getElementById("phone").value,
-      date: document.getElementById("date").value,
+      date: finalDateTime,
     };
 
     try {
@@ -420,3 +420,83 @@ document.addEventListener("DOMContentLoaded", () => {
     if (toggleBtn) toggleBtn.style.borderColor = "rgba(0,0,0,0.1)";
   }
 });
+
+// --- SISTEMA DE RESERVAS UX ---
+
+document.addEventListener("DOMContentLoaded", () => {
+  // Solo si existe el elemento (estamos en index.html)
+  const dateInput = document.getElementById("date-picker");
+  if (!dateInput) return;
+
+  flatpickr(dateInput, {
+    locale: "es", // Idioma español
+    minDate: "today", // No permitir pasado
+    dateFormat: "Y-m-d",
+    disableMobile: "true", // Usar siempre el calendario nativo de la librería
+
+    // RESTRICCIÓN 1: Deshabilitar Sábados y Domingos
+    disable: [
+      function (date) {
+        // Devuelve true para deshabilitar
+        return date.getDay() === 0 || date.getDay() === 6;
+      },
+    ],
+
+    // EVENTO: Cuando el usuario elige fecha
+    onChange: async function (selectedDates, dateStr, instance) {
+      if (selectedDates.length === 0) return;
+
+      await loadAvailableHours(dateStr);
+    },
+  });
+});
+
+async function loadAvailableHours(dateStr) {
+  const timeSelect = document.getElementById("time-select");
+  timeSelect.innerHTML = "<option>Cargando disponibilidad...</option>";
+  timeSelect.disabled = true;
+
+  try {
+    // 1. Consultar al Backend qué horas están ocupadas
+    const response = await fetch(
+      `${API_URL}/appointments/availability?look_date=${dateStr}`,
+    );
+    const data = await response.json();
+    const occupied = data.occupied_hours || [];
+
+    // 2. Definir Jornada Laboral (09:00 a 17:00 para terminar a las 18:00)
+    const startHour = 9;
+    const endHour = 17; // La última cita empieza a las 17:00
+
+    timeSelect.innerHTML =
+      '<option value="" selected>Selecciona una hora</option>';
+    let slotsFound = 0;
+
+    // 3. Generar Slots
+    for (let h = startHour; h <= endHour; h++) {
+      // Si la hora NO está en la lista de ocupados
+      if (!occupied.includes(h)) {
+        const option = document.createElement("option");
+        // Formato visual "09:00", "10:00"
+        const hourString = h.toString().padStart(2, "0") + ":00";
+
+        option.value = hourString;
+        option.text = `${hourString} hrs (Disponible)`;
+        timeSelect.appendChild(option);
+        slotsFound++;
+      }
+    }
+
+    if (slotsFound === 0) {
+      timeSelect.innerHTML = "<option>⚠️ Día completo. Elige otro.</option>";
+      timeSelect.disabled = true;
+    } else {
+      timeSelect.disabled = false; // Habilitar select
+      // Pequeña animación para indicar que ya puede elegir
+      timeSelect.focus();
+    }
+  } catch (error) {
+    console.error(error);
+    timeSelect.innerHTML = "<option>Error cargando horarios</option>";
+  }
+}
