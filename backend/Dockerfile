@@ -26,7 +26,7 @@ COPY . .
 # 7. Credenciales (Opcional si COPY . . ya lo hizo, pero seguro dejarlo)
 # Asegúrate de que estos archivos existan localmente antes de construir
 COPY credentials.json .
-COPY token.json .
+# COPY token.json .
 
 COPY restore_tokens.py .
 
