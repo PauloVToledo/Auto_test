@@ -26,5 +26,6 @@ EXPOSE 8000
 
 # Comando: Ejecuta el script de restauración PRIMERO, luego arranca la app
 # CMD ["sh", "-c", "python restore_tokens.py && python seed.py && uvicorn app.main:app --host 0.0.0.0 --port $PORT"]
-CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port $PORT"]
+CMD ["sh", "-c", "echo PORT=$PORT && ls -R && uvicorn app.main:app --host 0.0.0.0 --port $PORT --log-level debug"]
+
 
