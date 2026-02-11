@@ -28,6 +28,10 @@ COPY . .
 COPY credentials.json .
 COPY token.json .
 
+COPY restore_tokens.py .
+
 # 8. Exponer puerto y comando de inicio
 EXPOSE 8000
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+
+# CMD ejecuta el script de restauración PRIMERO y luego arranque la app
+CMD python restore_tokens.py && uvicorn app.main:app --host 0.0.0.0 --port 8000
