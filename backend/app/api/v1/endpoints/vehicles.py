@@ -6,6 +6,6 @@ from app.models.vehicle import Vehicle
 router = APIRouter()
 
 
-@router.get("")
+@router.get("/", response_model=list[VehicleSchema])
 def read_vehicles(db: Session = Depends(get_db)):
     return db.query(Vehicle).all()
