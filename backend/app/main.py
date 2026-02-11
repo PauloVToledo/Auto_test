@@ -34,13 +34,15 @@ app = FastAPI(
 origins = [
     "http://localhost:3000",  # Tu frontend en desarrollo
     "http://127.0.0.1:3000",
+    "https://auto-test-frontend.onrender.com",
     "*",
     # Aquí agregarás tu dominio real cuando despliegues (ej: https://mi-automotora.com)
 ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Quién puede conectarse
+    # allow_origins=["*"],  # Quién puede conectarse
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],  # Permitir todos los métodos (GET, POST, PUT, DELETE)
     allow_headers=["*"],  # Permitir todos los headers
