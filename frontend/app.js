@@ -65,7 +65,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 async function fetchAndSetupVehicles(container) {
   try {
-    const response = await fetch(`${API_URL}/vehicles`);
+    const response = await fetch(`${API_URL}/vehicles/`);
     allVehicles = await response.json(); // Guardamos en memoria
 
     // Llenar los Selects (Marca y Año) dinámicamente según lo que haya en BD
