@@ -1,30 +1,46 @@
-name: Backend QA
+name: Backend QA CI
 
+# Se ejecuta al hacer push o pull request
 on: [push, pull_request]
 
 jobs:
   test:
     runs-on: ubuntu-latest
+    
+    # IMPORTANTE: Definimos que todas las acciones ocurran en la carpeta 'backend'
+    defaults:
+      run:
+        working-directory: ./backend
 
     steps:
-      - name: Check out code
-        uses: actions/checkout@v3
+    # 1. Bajar el código del repo
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.13"
+    # 2. Instalar Python
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.13'
 
-      - name: Install dependencies
-        run: |
-          cd backend
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install pytest httpx structlog
+    # 3. Instalar dependencias
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        # Instalamos librerías extra de testing si no están en requirements.txt
+        pip install pytest httpx structlog
 
-      - name: Run Tests
-        run: |
-          cd backend
-          # Ejecutamos pytest. Nota: No necesitamos levantar Postgres real
-          # porque configuramos SQLite en memoria en conftest.py
-          pytest -v
+    # 4. Ejecutar Tests
+    - name: Run Tests with Pytest
+      # Definimos variables de entorno "dummy" (falsas) para que la app arranque
+      # Sin esto, Pydantic o os.getenv podrían dar error antes de iniciar el test
+      env:
+        DATABASE_URL: "sqlite:///:memory:"  # Para que no busque Postgres
+        GEMINI_API_KEY: "dummy_key_for_ci"  # Clave falsa para que no falle la config
+        TWILIO_ACCOUNT_SID: "dummy_sid"
+        TWILIO_AUTH_TOKEN: "dummy_token"
+        TWILIO_PHONE_NUMBER: "whatsapp:+123456789"
+        MAIL_TO_SELLER: "test@test.com"
+      run: |
+        pytest -v

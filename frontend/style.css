@@ -239,3 +239,71 @@ body.dark-mode .text-secondary {
   background-color: rgba(255, 255, 255, 0.1);
   transform: scale(1.1);
 }
+
+/* --- CORRECCIÓN FLATPICKR PARA DARK MODE --- */
+
+/* 1. Fondo del Calendario y Flecha */
+body.dark-mode .flatpickr-calendar {
+  background: #1e1e1e !important; /* Gris oscuro igual a tus modales */
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5) !important;
+  border: 1px solid #333 !important;
+}
+
+body.dark-mode .flatpickr-calendar:before,
+body.dark-mode .flatpickr-calendar:after {
+  border-bottom-color: #1e1e1e !important; /* La flechita de arriba */
+}
+
+/* 2. Cabecera (Mes y Año) */
+body.dark-mode .flatpickr-months .flatpickr-month {
+  background: #1e1e1e !important;
+  color: #fff !important;
+  fill: #fff !important; /* Iconos SVG de flechas */
+}
+
+body.dark-mode .flatpickr-current-month .flatpickr-monthDropdown-months {
+  background-color: #1e1e1e !important;
+  color: #fff !important;
+}
+
+body.dark-mode .flatpickr-current-month input.cur-year {
+  color: #fff !important;
+}
+
+/* 3. Días de la semana (Lun, Mar, Mie...) */
+body.dark-mode .flatpickr-weekdays {
+  background: #1e1e1e !important;
+}
+body.dark-mode span.flatpickr-weekday {
+  color: #a0a0a0 !important; /* Gris claro */
+}
+
+/* 4. Los números de los días */
+body.dark-mode .flatpickr-day {
+  color: #e0e0e0 !important; /* Texto legible */
+}
+
+/* Días al pasar el mouse (Hover) */
+body.dark-mode .flatpickr-day:hover,
+body.dark-mode .flatpickr-day:focus {
+  background: #333 !important;
+  border-color: #333 !important;
+  color: #fff !important;
+}
+
+/* Días Deshabilitados (Sábados, Domingos y Pasado) */
+body.dark-mode .flatpickr-day.flatpickr-disabled,
+body.dark-mode .flatpickr-day.flatpickr-disabled:hover {
+  color: #444 !important; /* Muy oscuro para que se note que no se puede clicar */
+  background: transparent !important;
+  border-color: transparent !important;
+}
+
+/* 5. El día seleccionado (El círculo azul) */
+body.dark-mode .flatpickr-day.selected,
+body.dark-mode .flatpickr-day.startRange,
+body.dark-mode .flatpickr-day.endRange {
+  background: #0d6efd !important; /* Mantener azul Bootstrap */
+  color: #fff !important;
+  border-color: #0d6efd !important;
+}

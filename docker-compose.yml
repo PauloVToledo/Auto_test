@@ -3,6 +3,7 @@ version: '3.8'
 services:
   db:
     image: postgres:15
+    restart: always  # Si se cae, que se levante solo
     environment:
       POSTGRES_USER: usuario
       POSTGRES_PASSWORD: password
@@ -14,27 +15,32 @@ services:
 
   backend:
     build: ./backend
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
-    volumes:
-      - ./backend:/app
+    # ELIMINADO: command (Usará el CMD del Dockerfile sin --reload)
+    # ELIMINADO: volumes (Usará el código copiado dentro de la imagen)
+    restart: always
     ports:
       - "8000:8000"
     environment:
       - DATABASE_URL=postgresql://usuario:password@db:5432/automotora_db
-      # Agrega aquí tus otras variables (Twilio, Google, etc)
-      # - TWILIO_ACCOUNT_SID= put_your_sid_here
-      # - TWILIO_AUTH_TOKEN= put_your_token_here
-      # - GOOGLE_API_KEY=AIzaSy...
+      
+      # IMPORTANTE: Asegúrate de pasar estas variables reales.
+      # Puedes usar un archivo .env en la raíz y llamarlas así: ${VARIABLE}
       - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - TWILIO_ACCOUNT_SID=${TWILIO_ACCOUNT_SID}
+      - TWILIO_AUTH_TOKEN=${TWILIO_AUTH_TOKEN}
+      - TWILIO_PHONE_NUMBER=${TWILIO_PHONE_NUMBER}
+      - MAIL_TO_SELLER=${MAIL_TO_SELLER}
+      # Nota: SendGrid/Gmail usan el token.json que copiamos, 
+      # pero si usas variables de entorno para configuración extra, agrégalas.
+
     depends_on:
       - db
 
-  
-  # 3. Frontend (Nginx - Nuevo)
   frontend:
     build: ./frontend
+    restart: always
     ports:
-      - "3000:80" # Mapeamos el puerto 3000 de tu PC al 80 del contenedor
+      - "3000:80"
     depends_on:
       - backend
 

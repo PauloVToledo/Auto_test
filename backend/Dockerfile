@@ -1,24 +1,33 @@
-# Usar imagen ligera de Python
+# 1. Imagen base (Python 3.13 según tu estructura)
 FROM python:3.13-slim
 
-# Evitar que Python genere archivos .pyc y buffer de salida
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+# 2. Variables de entorno para optimizar Python en Docker
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
+# 3. Directorio de trabajo dentro del contenedor
 WORKDIR /app
 
-# Instalar dependencias del sistema
-RUN apt-get update && apt-get install -y gcc libpq-dev
+# 4. Instalar dependencias del sistema (necesarias para psycopg2/Postgres)
+RUN apt-get update && apt-get install -y \
+    gcc \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
 
-# Instalar dependencias de Python
+# 5. Instalar dependencias de Python
+# Copiamos solo el requirements primero para aprovechar la caché de Docker
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copiar el código
+# 6. Copiar TODO el código fuente
+# (Gracias al .dockerignore, esto ignora venv y __pycache__)
 COPY . .
 
-# Exponer el puerto
-EXPOSE 8000
+# 7. Credenciales (Opcional si COPY . . ya lo hizo, pero seguro dejarlo)
+# Asegúrate de que estos archivos existan localmente antes de construir
+COPY credentials.json .
+COPY token.json .
 
-# Comando para correr la app
+# 8. Exponer puerto y comando de inicio
+EXPOSE 8000
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
