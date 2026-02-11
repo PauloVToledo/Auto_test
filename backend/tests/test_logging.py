@@ -19,6 +19,7 @@ def test_appointment_logs_structure(client, create_test_vehicle):
         "customer_name": "Log Tester",
         "customer_phone": "+56911112222",
         "date": "2023-12-25T12:00:00",
+        "customer_email": "log@qa.com",
     }
 
     # 1. MOCKING: Evitamos que intente enviar WhatsApps o Correos reales

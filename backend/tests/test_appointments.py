@@ -9,6 +9,7 @@ def test_create_appointment_success(client, create_test_vehicle):
 
     payload = {
         "vehicle_id": vehicle_id,
+        "customer_email": "test@qa.com",
         "customer_name": "Tester QA",
         "customer_phone": "+56999999999",
         "date": "2023-12-25T10:00:00",
