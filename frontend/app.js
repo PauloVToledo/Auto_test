@@ -1,7 +1,7 @@
 // enabled to local tests.
 //const API_URL = "http://127.0.0.1:8000/api/v1";
 
-const API_URL = "https://auto-test-backend.onrender.com/api/v1";
+const API_URL = "https://auto-test-6b9j.onrender.com/api/v1";
 
 let bookingModal;
 let allVehicles = []; // 1. Variable Global para guardar los autos
