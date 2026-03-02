@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Automotora Pro | About</title>
+    <title>Automotora Pro | Sobre el Proyecto</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico?v=2" />
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
@@ -12,7 +12,6 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <!-- MISMA NAVBAR -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark py-3">
       <div class="container">
         <a class="navbar-brand fw-bold" href="index.html">🚗 Automotora</a>
@@ -34,54 +33,96 @@
             </li>
           </ul>
 
-          <!-- Botón Dark Mode (A la derecha usando ms-lg-auto) -->
           <div class="d-flex ms-lg-auto align-items-center">
-            <button id="theme-toggle" title="Cambiar Tema">
-              <!-- El icono se inyectará por JS -->
-              🌙
-            </button>
+            <button id="theme-toggle" title="Cambiar Tema">🌙</button>
           </div>
         </div>
       </div>
     </nav>
 
-    <!-- CONTENIDO ABOUT -->
-    <div class="container mt-5">
+    <div class="container my-5">
       <div class="row justify-content-center">
-        <div class="col-md-8">
-          <div class="card p-5">
-            <h2 class="mb-4 text-primary">Sobre este Prototipo</h2>
-            <p class="lead">
-              Este es un sistema de agendamiento automatizado desarrollado como
-              prueba con un enfoque esencialmente en 'Backend y Servicios'.
-            </p>
-            <hr />
-            <h5 class="mt-4">🚀 Tecnologías Utilizadas:</h5>
-            <ul class="list-group list-group-flush mt-3">
-              <li class="list-group-item">
-                <strong>Backend:</strong> Python (FastAPI) + SQLAlchemy.
-              </li>
-              <li class="list-group-item">
-                <strong>Base de Datos:</strong> PostgreSQL.
-              </li>
-              <li class="list-group-item">
-                <strong>Frontend:</strong> HTML5, JavaScript y Bootstrap 5.
-              </li>
-              <li class="list-group-item">
-                <strong>Integraciones:</strong> Twilio (WhatsApp API) y Gmail
-                API.
-              </li>
-            </ul>
+        <div class="col-md-9 col-lg-8">
+          <div class="card shadow-sm p-4 p-md-5">
+            <h2 class="mb-4 text-primary fw-bold">Sobre este Prototipo</h2>
 
-            <div class="alert alert-info mt-4" role="alert">
-              <strong>Funcionalidad:</strong> Permite visualizar el stock real
-              de la base de datos y generar citas que notifican tanto al cliente
-              como al vendedor en tiempo real.
+            <p class="lead text-secondary">
+              Este sistema es una solución integral de
+              <strong>Gestión de Inventario y Agendamiento Automatizado</strong
+              >. El enfoque principal del desarrollo ha sido la arquitectura de
+              servicios en el backend, garantizando la integridad de los datos y
+              la comunicación eficiente entre componentes.
+            </p>
+
+            <hr class="my-4" />
+
+            <h5 class="fw-bold">
+              <i class="bi bi-cpu"></i> Stack Tecnológico:
+            </h5>
+            <div class="row mt-3">
+              <div class="col-sm-6">
+                <ul class="list-unstyled">
+                  <li><strong>Backend:</strong> FastAPI (Python)</li>
+                  <li><strong>ORM:</strong> SQLAlchemy</li>
+                  <li><strong>Base de Datos:</strong> PostgreSQL</li>
+                </ul>
+              </div>
+              <div class="col-sm-6">
+                <ul class="list-unstyled">
+                  <li><strong>Frontend:</strong> Bootstrap 5 & JS Moderno</li>
+                  <li><strong>Notificaciones:</strong> SMTP / Gmail API</li>
+                  <li><strong>Arquitectura:</strong> RESTful API</li>
+                </ul>
+              </div>
             </div>
 
-            <div class="mt-4 text-center">
-              <a href="index.html" class="btn btn-outline-primary"
-                >Volver a ver Autos</a
+            <h5 class="mt-4 fw-bold">Estado de las Integraciones:</h5>
+            <div class="list-group mt-3">
+              <div
+                class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+              >
+                <div>
+                  <h6 class="mb-1 text-success">
+                    ✅ Notificaciones por Correo Electrónico
+                  </h6>
+                  <p class="mb-1 small text-muted">
+                    Totalmente funcional. El sistema envía confirmaciones
+                    automáticas de citas tanto al cliente como al equipo de
+                    ventas utilizando protocolos seguros.
+                  </p>
+                </div>
+              </div>
+
+              <div
+                class="list-group-item list-group-item-action d-flex justify-content-between align-items-center border-left-warning"
+              >
+                <div>
+                  <h6 class="mb-1 text-warning">
+                    ⚠️ Integración de WhatsApp (Twilio)
+                  </h6>
+                  <p class="mb-1 small text-muted">
+                    La lógica de mensajería instantánea fue diseñada pero
+                    <strong>no se encuentra activa</strong> en este prototipo
+                    debido a los costos asociados a las licencias de la API de
+                    Twilio.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="alert alert-primary mt-4 border-0 shadow-sm"
+              role="alert"
+            >
+              <strong>Propósito:</strong> Demostrar la sincronización en tiempo
+              real entre el stock de vehículos en base de datos y la capacidad
+              de generar flujos de trabajo (workflows) automatizados tras una
+              acción del usuario.
+            </div>
+
+            <div class="mt-5 text-center">
+              <a href="index.html" class="btn btn-primary px-4 py-2"
+                >Explorar Inventario</a
               >
             </div>
           </div>
