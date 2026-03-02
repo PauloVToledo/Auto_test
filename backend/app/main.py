@@ -12,10 +12,18 @@ import structlog
 import time
 import uuid
 
+import os
+import json
+
 
 # 1. INICIAR EL LOGGER
 configure_logging()
 logger = structlog.get_logger()
+
+# ESTO ES LO QUE HACE QUE FUNCIONE EN RENDER
+if os.getenv("GOOGLE_TOKEN_JSON_CONTENT"):
+    with open("token.json", "w") as f:
+        f.write(os.getenv("GOOGLE_TOKEN_JSON_CONTENT"))
 
 # uvicorn app.main:app --reload   --> to run the app
 
